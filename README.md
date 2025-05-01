@@ -124,3 +124,13 @@ Example format:
 }
 ```
 
+## API Health Check (Version)
+
+You can check if the API is up and running by calling the version endpoint:
+
+```
+GET /api/version
+```
+
+This will return a simple HTML page with the API version and author information. Use this endpoint to verify the API is available before making other requests.
+

@@ -119,7 +119,7 @@ def get_version_info():
         content="""
         <html><head><title>Survey API</title></head><body>
         <h1>Survey API Version</h1>
-        <p>Version: 2.0.0.0</p>
+        <p>Version: 3.0.0.0</p>
         <p>Author: Qasim Shahid - SWE 645</p>
         </body></html>
         """,
