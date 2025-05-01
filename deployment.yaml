@@ -1,3 +1,5 @@
+# Qasim Shahid SWE 645 - Assignment 4
+# deployment.yaml: Kubernetes deployment configuration for the Python Survey application.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

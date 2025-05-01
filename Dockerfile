@@ -1,4 +1,7 @@
-# Use an official Python runtime as a parent image
+# Qasim Shahid SWE 645 - Assignment 4
+# Dockerfile: Docker configuration for building the Python Survey application image.
+
+# Use the official Python image from the Docker Hub
 FROM python:3.10-slim
 
 # Set the working directory in the container
@@ -7,10 +10,10 @@ WORKDIR /app
 # Copy the current directory contents into the container
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
+# Install packages specified in requirements.txt (we need fastapi and uvicorn and peewee)
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port your FastAPI application runs on
+# Expose the port the FastAPI application runs on
 EXPOSE 8080
 
 # Run the application

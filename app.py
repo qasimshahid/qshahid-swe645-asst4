@@ -1,3 +1,5 @@
+#  Qasim Shahid SWE 645 - Assignment 4
+# app.py: Main FastAPI application file for handling routes and database interactions.
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, EmailStr, Field
