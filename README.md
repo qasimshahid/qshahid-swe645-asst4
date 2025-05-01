@@ -1,5 +1,41 @@
 # qshahid-swe645-asst4
 
+## Note about db_secret.json
+The `db_secret.json` file in this GitHub repo is just an example of the format required for database secrets. **You must upload your own `db_secret.json` as a Jenkins secret file with your actual RDS database name, admin username, and password.**
+
+Example format:
+```
+{
+  "DB_NAME": "your_db_name",
+  "DB_USER": "your_db_user",
+  "DB_PASSWORD": "your_db_password",
+  "DB_HOST": "your_db_host",
+  "DB_PORT": 3306
+}
+```
+
+## API Health Check (Version)
+
+You can check if the API is up and running by calling the version endpoint:
+
+```
+GET /api/version
+```
+
+This will return a simple HTML page with the API version and author information. Use this endpoint to verify the API is available before making other requests.
+
+---
+
+## Database Setup Instructions
+
+Before running this project, you must create the required database and tables:
+
+1. Use the provided `createDb.sql` file to create the database schema.
+2. Connect to your AWS RDS MySQL instance using MySQL Workbench (or a similar tool).
+3. Run the contents of `createDb.sql` to set up the database and tables.
+
+Make sure your RDS instance is accessible and your credentials match those in your `db_secret.json` file.
+
 ## Example POST requests for /api/surveys
 
 ### Example 1
@@ -109,28 +145,3 @@ DELETE /api/surveys/1
 Deletes the survey with ID 1.
 
 ---
-
-## Note about db_secret.json
-The `db_secret.json` file in this GitHub repo is just an example of the format required for database secrets. **You must upload your own `db_secret.json` as a Jenkins secret file with your actual RDS database name, admin username, and password.**
-
-Example format:
-```
-{
-  "DB_NAME": "your_db_name",
-  "DB_USER": "your_db_user",
-  "DB_PASSWORD": "your_db_password",
-  "DB_HOST": "your_db_host",
-  "DB_PORT": 3306
-}
-```
-
-## API Health Check (Version)
-
-You can check if the API is up and running by calling the version endpoint:
-
-```
-GET /api/version
-```
-
-This will return a simple HTML page with the API version and author information. Use this endpoint to verify the API is available before making other requests.
-
