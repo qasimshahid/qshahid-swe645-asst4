@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, EmailStr, Field
-from pydantic.types import constr
+from pydantic import BaseModel, EmailStr, Field, constr
 from peewee import *
 from datetime import date
 import json
+from typing import Optional
 
 # Load secrets
 with open('db_secret.json') as f:
@@ -40,21 +40,21 @@ class Survey(Model):
     class Meta:
         database = db
 
-# Pydantic v2 request model
+# Pydantic request model (v1)
 class SurveyRequest(BaseModel):
-    first_name: constr(min_length=1, max_length=255) = Field(..., description="First name is required")
-    last_name: constr(min_length=1, max_length=255) = Field(..., description="Last name is required")
-    street_address: constr(min_length=1, max_length=255) = Field(..., description="Street address is required")
-    city: constr(min_length=1, max_length=255) = Field(..., description="City is required")
-    state: constr(min_length=1, max_length=255) = Field(..., description="State is required")
-    zip: constr(min_length=1, max_length=20) = Field(..., description="ZIP code is required")
-    telephone: constr(min_length=1, max_length=20) = Field(..., description="Telephone number is required")
-    email: EmailStr = Field(..., description="Email must be valid")
-    date_of_survey: date = Field(..., description="Date of survey is required")
-    liked_most: constr(max_length=255) | None = Field(None)
-    interest_source: constr(max_length=255) | None = Field(None)
-    recommend_likelihood: constr(max_length=255) | None = Field(None)
-    additional_comments: constr(max_length=1500) | None = Field(None)
+    first_name: constr(min_length=1, max_length=255) = Field(...)
+    last_name: constr(min_length=1, max_length=255) = Field(...)
+    street_address: constr(min_length=1, max_length=255) = Field(...)
+    city: constr(min_length=1, max_length=255) = Field(...)
+    state: constr(min_length=1, max_length=255) = Field(...)
+    zip: constr(min_length=1, max_length=20) = Field(...)
+    telephone: constr(min_length=1, max_length=20) = Field(...)
+    email: EmailStr = Field(...)
+    date_of_survey: date = Field(...)
+    liked_most: Optional[constr(max_length=255)] = None
+    interest_source: Optional[constr(max_length=255)] = None
+    recommend_likelihood: Optional[constr(max_length=255)] = None
+    additional_comments: Optional[constr(max_length=1500)] = None
 
 # FastAPI app
 app = FastAPI()
@@ -66,7 +66,7 @@ db.create_tables([Survey])
 def create_survey(survey: SurveyRequest):
     try:
         validate_survey_input(survey)
-        new_survey = Survey.create(**survey.model_dump())
+        new_survey = Survey.create(**survey.dict())
         return {"id": new_survey.id, "message": "Survey created successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -93,7 +93,7 @@ def update_survey(id: int, survey: SurveyRequest):
     try:
         validate_survey_input(survey)
         existing = Survey.get(Survey.id == id)
-        for k, v in survey.model_dump().items():
+        for k, v in survey.dict().items():
             setattr(existing, k, v)
         existing.save()
         return {"message": "Survey updated successfully"}
