@@ -2,7 +2,7 @@
 # app.py: Main FastAPI application file for handling routes and database interactions.
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, constr
 from peewee import *
 import json
 from datetime import date
@@ -51,19 +51,19 @@ db.create_tables([Survey])
 
 # Pydantic model for request validation
 class SurveyRequest(BaseModel):
-    first_name: str = Field(..., min_length=1, max_length=255, description="First name is required")
-    last_name: str = Field(..., min_length=1, max_length=255, description="Last name is required")
-    street_address: str = Field(..., min_length=1, max_length=255, description="Street address is required")
-    city: str = Field(..., min_length=1, max_length=255, description="City is required")
-    state: str = Field(..., min_length=1, max_length=255, description="State is required")
-    zip: str = Field(..., min_length=1, max_length=20, description="ZIP code is required")
-    telephone: str = Field(..., min_length=1, max_length=20, description="Telephone number is required")
+    first_name: constr(min_length=1, max_length=255) = Field(..., description="First name is required")
+    last_name: constr(min_length=1, max_length=255) = Field(..., description="Last name is required")
+    street_address: constr(min_length=1, max_length=255) = Field(..., description="Street address is required")
+    city: constr(min_length=1, max_length=255) = Field(..., description="City is required")
+    state: constr(min_length=1, max_length=255) = Field(..., description="State is required")
+    zip: constr(min_length=1, max_length=20) = Field(..., description="ZIP code is required")
+    telephone: constr(min_length=1, max_length=20) = Field(..., description="Telephone number is required")
     email: EmailStr = Field(..., description="Email must be valid")
     date_of_survey: date = Field(..., description="Date of survey is required")
-    liked_most: str = Field(None, max_length=255)
-    interest_source: str = Field(None, max_length=255)
-    recommend_likelihood: str = Field(None, max_length=255)
-    additional_comments: str = Field(None, max_length=1500)
+    liked_most: constr(max_length=255) = Field(None)
+    interest_source: constr(max_length=255) = Field(None)
+    recommend_likelihood: constr(max_length=255) = Field(None)
+    additional_comments: constr(max_length=1500) = Field(None)
 
 # Routes
 # Add validation for survey input fields
