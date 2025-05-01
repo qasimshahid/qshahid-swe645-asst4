@@ -20,8 +20,7 @@ db = MySQLDatabase(
     user=secrets['DB_USER'],
     password=secrets['DB_PASSWORD'],
     host=secrets['DB_HOST'],
-    port=secrets['DB_PORT'],
-    **{'driver': 'pymysql'}
+    port=secrets['DB_PORT']
 )
 
 # Define the Survey model
