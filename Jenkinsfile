@@ -23,10 +23,8 @@ pipeline {
 
         stage('Prepare Secrets') {
             steps {
-                script {
-                    withCredentials([file(credentialsId: 'db_secret_file', variable: 'DB_SECRET')]) {
-                        sh "cp ${DB_SECRET} ./db_secret.json"
-                    }
+                withCredentials([file(credentialsId: 'db_secret_file', variable: 'DB_SECRET')]) {
+                    sh 'cp "$DB_SECRET" ./db_secret.json'
                 }
             }
         }
