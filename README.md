@@ -1,5 +1,18 @@
 # qshahid-swe645-asst4
 
+## AWS Security Group / Firewall Setup
+
+Make sure your AWS RDS and EC2 security groups allow the following inbound rules for connectivity and testing:
+
+- HTTP (TCP 80) from 0.0.0.0/0
+- HTTPS (TCP 443) from 0.0.0.0/0
+- SSH (TCP 22) from 0.0.0.0/0
+- MySQL/Aurora (TCP 3306) from 0.0.0.0/0
+- Custom TCP (TCP 30000–40000) from 0.0.0.0/0
+- Custom TCP (TCP 8080) from 0.0.0.0/0
+
+Ensure these rules are set in your AWS Security Groups for both RDS and EC2 as needed, so your application, database, and deployment tools can communicate properly during development and testing.
+
 ## Note about db_secret.json
 The `db_secret.json` file in this GitHub repo is just an example of the format required for database secrets. **You must upload your own `db_secret.json` as a Jenkins secret file with your actual RDS database name, admin username, and password.**
 
