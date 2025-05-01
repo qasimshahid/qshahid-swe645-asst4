@@ -1,5 +1,7 @@
 # qshahid-swe645-asst4
 
+- Full instructions are available under ```README.pdf```.
+
 ## AWS Security Group / Firewall Setup
 
 Make sure your AWS RDS and EC2 security groups allow the following inbound rules for connectivity and testing:
