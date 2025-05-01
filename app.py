@@ -118,8 +118,8 @@ def get_version_info():
     return HTMLResponse(
         content="""
         <html><head><title>Survey API Extra Credit Python Version</title></head><body>
-        <h1>Survey API Version</h1>
-        <p>Version: 3.0.0.0</p>
+        <h1>Survey API Extra Credit Python Version</h1>
+        <p>Version: 1.0.0.0</p>
         <p>Author: Qasim Shahid - SWE 645</p>
         </body></html>
         """,
