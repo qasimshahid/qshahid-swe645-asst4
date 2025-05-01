@@ -23,9 +23,9 @@ pipeline {
 
         stage('Prepare Secrets') {
             steps {
-                script { // Load secrets from Jenkins credentials, the file in the git repo is not used, it's just an an example. Jenkins will use the secret file you provide instead.
+                script {
                     withCredentials([file(credentialsId: 'db_secret_file', variable: 'DB_SECRET')]) {
-                        sh 'cp $DB_SECRET ./db_secret.json'
+                        sh "cp ${DB_SECRET} ./db_secret.json"
                     }
                 }
             }
