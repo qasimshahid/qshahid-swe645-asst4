@@ -5,7 +5,7 @@
 // This Jenkinsfile automates the build, test, and deployment process for a Python FastAPI application using Docker and Kubernetes.
 // It includes stages for checking out the code, preparing secrets, building the Docker image, pushing it to Docker Hub, and deploying it to a Kubernetes cluster.
 // The pipeline uses Jenkins credentials to manage sensitive information such as Docker Hub credentials and Kubernetes configuration.
-// The pipeline is designed to be triggered on changes to the main branch of the GitHub repository.
+// The pipeline is designed to be triggered on changes to the main branch of the GitHub repository..
 
 pipeline {
     agent any
