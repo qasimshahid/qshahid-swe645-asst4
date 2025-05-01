@@ -1,20 +1,18 @@
-#  Qasim Shahid SWE 645 - Assignment 4
-# app.py: Main FastAPI application file for handling routes and database interactions.
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, EmailStr, Field, constr
+from pydantic import BaseModel, EmailStr, Field
+from pydantic.types import constr
 from peewee import *
-import json
 from datetime import date
+import json
 
-# Load database credentials from a secret file
+# Load secrets
 with open('db_secret.json') as f:
     secrets = json.load(f)
 
-# Add a debug print statement to log database connection details
-print("Connecting to database with host:", secrets['DB_HOST'], "and port:", secrets['DB_PORT'])
+print(f"Connecting to database with host: {secrets['DB_HOST']} and port: {secrets['DB_PORT']}")
 
-# Database configuration
+# MySQL DB
 db = MySQLDatabase(
     secrets['DB_NAME'],
     user=secrets['DB_USER'],
@@ -23,7 +21,7 @@ db = MySQLDatabase(
     port=secrets['DB_PORT']
 )
 
-# Define the Survey model
+# Peewee ORM model
 class Survey(Model):
     first_name = CharField()
     last_name = CharField()
@@ -42,14 +40,7 @@ class Survey(Model):
     class Meta:
         database = db
 
-# Initialize FastAPI app
-app = FastAPI()
-
-# Create tables
-db.connect()
-db.create_tables([Survey])
-
-# Pydantic model for request validation
+# Pydantic v2 request model
 class SurveyRequest(BaseModel):
     first_name: constr(min_length=1, max_length=255) = Field(..., description="First name is required")
     last_name: constr(min_length=1, max_length=255) = Field(..., description="Last name is required")
@@ -60,19 +51,22 @@ class SurveyRequest(BaseModel):
     telephone: constr(min_length=1, max_length=20) = Field(..., description="Telephone number is required")
     email: EmailStr = Field(..., description="Email must be valid")
     date_of_survey: date = Field(..., description="Date of survey is required")
-    liked_most: constr(max_length=255) = Field(None)
-    interest_source: constr(max_length=255) = Field(None)
-    recommend_likelihood: constr(max_length=255) = Field(None)
-    additional_comments: constr(max_length=1500) = Field(None)
+    liked_most: constr(max_length=255) | None = Field(None)
+    interest_source: constr(max_length=255) | None = Field(None)
+    recommend_likelihood: constr(max_length=255) | None = Field(None)
+    additional_comments: constr(max_length=1500) | None = Field(None)
+
+# FastAPI app
+app = FastAPI()
+db.connect()
+db.create_tables([Survey])
 
 # Routes
-# Add validation for survey input fields
 @app.post("/api/surveys")
 def create_survey(survey: SurveyRequest):
     try:
         validate_survey_input(survey)
-        survey_data = survey.dict()
-        new_survey = Survey.create(**survey_data)
+        new_survey = Survey.create(**survey.model_dump())
         return {"id": new_survey.id, "message": "Survey created successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -80,8 +74,7 @@ def create_survey(survey: SurveyRequest):
 @app.get("/api/surveys")
 def get_all_surveys():
     try:
-        surveys = [survey.__data__ for survey in Survey.select()]
-        return surveys
+        return [s.__data__ for s in Survey.select()]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -99,10 +92,10 @@ def get_survey_by_id(id: int):
 def update_survey(id: int, survey: SurveyRequest):
     try:
         validate_survey_input(survey)
-        existing_survey = Survey.get(Survey.id == id)
-        for key, value in survey.dict().items():
-            setattr(existing_survey, key, value)
-        existing_survey.save()
+        existing = Survey.get(Survey.id == id)
+        for k, v in survey.model_dump().items():
+            setattr(existing, k, v)
+        existing.save()
         return {"message": "Survey updated successfully"}
     except Survey.DoesNotExist:
         raise HTTPException(status_code=404, detail="Survey not found")
@@ -120,35 +113,30 @@ def delete_survey(id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Add a version endpoint to return version information
 @app.get("/api/version")
 def get_version_info():
-    try:
-        version_html = """
-        <html>
-        <head><title>Python Survey API Version</title></head>
-        <body>
+    return HTMLResponse(
+        content="""
+        <html><head><title>Survey API</title></head><body>
         <h1>Survey API Version</h1>
-        <p>Current Version: 2.0.0.0</p>
-        <p>By Qasim Shahid for SWE 645, Extra Credit Assignment</p>
-        </body>
-        </html>
-        """
-        return HTMLResponse(content=version_html, status_code=200)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        <p>Version: 2.0.0.0</p>
+        <p>Author: Qasim Shahid - SWE 645</p>
+        </body></html>
+        """,
+        status_code=200
+    )
 
-# Validation function for survey input fields
+# Manual validations
 def validate_survey_input(survey: SurveyRequest):
-    VALID_LIKED_MOST = ["students", "location", "campus", "atmosphere", "dorm rooms", "sports"]
-    VALID_INTEREST_SOURCE = ["friends", "television", "internet", "other"]
-    VALID_RECOMMEND_LIKELIHOOD = ["very likely", "likely", "unlikely"]
+    VALID_LIKED = ["students", "location", "campus", "atmosphere", "dorm rooms", "sports"]
+    VALID_INTEREST = ["friends", "television", "internet", "other"]
+    VALID_RECOMMEND = ["very likely", "likely", "unlikely"]
 
-    if survey.liked_most and survey.liked_most.lower().strip() not in VALID_LIKED_MOST:
-        raise HTTPException(status_code=400, detail=f"Invalid value for liked_most. Options are {VALID_LIKED_MOST}. You passed {survey.liked_most}")
+    if survey.liked_most and survey.liked_most.lower().strip() not in VALID_LIKED:
+        raise HTTPException(400, f"Invalid liked_most. Must be one of {VALID_LIKED}")
 
-    if survey.interest_source and survey.interest_source.lower().strip() not in VALID_INTEREST_SOURCE:
-        raise HTTPException(status_code=400, detail=f"Invalid value for interest_source. Options are {VALID_INTEREST_SOURCE}. You passed {survey.interest_source}")
+    if survey.interest_source and survey.interest_source.lower().strip() not in VALID_INTEREST:
+        raise HTTPException(400, f"Invalid interest_source. Must be one of {VALID_INTEREST}")
 
-    if survey.recommend_likelihood and survey.recommend_likelihood.lower().strip() not in VALID_RECOMMEND_LIKELIHOOD:
-        raise HTTPException(status_code=400, detail=f"Invalid value for recommend_likelihood. Options are {VALID_RECOMMEND_LIKELIHOOD}. You passed {survey.recommend_likelihood}")
+    if survey.recommend_likelihood and survey.recommend_likelihood.lower().strip() not in VALID_RECOMMEND:
+        raise HTTPException(400, f"Invalid recommend_likelihood. Must be one of {VALID_RECOMMEND}")

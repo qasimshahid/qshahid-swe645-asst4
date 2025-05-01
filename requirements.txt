@@ -1,6 +1,6 @@
-fastapi==0.95.2
-uvicorn==0.22.0
-peewee==3.15.4
-pydantic==1.10.7
-mysql-connector-python
-PyMySQL
+fastapi==0.111.0
+uvicorn==0.29.0
+peewee==3.17.1
+pydantic==2.7.1
+mysql-connector-python==8.4.0
+PyMySQL==1.1.0
