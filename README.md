@@ -68,3 +68,59 @@ Content-Type: application/json
 }
 ```
 
+## Example GET request
+```
+GET /api/surveys
+```
+Returns a list of all surveys.
+
+```
+GET /api/surveys/{id}
+```
+Returns a single survey by its ID.
+
+## Example PUT request
+```
+PUT /api/surveys/1
+Content-Type: application/json
+
+{
+  "firstName": "Updated",
+  "lastName": "Name",
+  "streetAddress": "999 New St",
+  "city": "Reston",
+  "state": "VA",
+  "zipcode": "20190",
+  "telephone": "555-000-0000",
+  "email": "updated.email@example.com",
+  "dateOfSurvey": "2025-05-01",
+  "likedMost": "campus",
+  "interestSource": "internet",
+  "recommendLikelihood": "likely",
+  "additionalComments": "Updated comment."
+}
+```
+Updates the survey with ID 1.
+
+## Example DELETE request
+```
+DELETE /api/surveys/1
+```
+Deletes the survey with ID 1.
+
+---
+
+## Note about db_secret.json
+The `db_secret.json` file in this GitHub repo is just an example of the format required for database secrets. **You must upload your own `db_secret.json` as a Jenkins secret file with your actual RDS database name, admin username, and password.**
+
+Example format:
+```
+{
+  "DB_NAME": "your_db_name",
+  "DB_USER": "your_db_user",
+  "DB_PASSWORD": "your_db_password",
+  "DB_HOST": "your_db_host",
+  "DB_PORT": 3306
+}
+```
+
