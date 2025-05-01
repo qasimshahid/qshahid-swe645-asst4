@@ -31,6 +31,7 @@ Example format:
 
 ## API Health Check (Version)
 
+
 You can check if the API is up and running by calling the version endpoint:
 
 ```
