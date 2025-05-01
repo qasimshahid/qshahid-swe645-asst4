@@ -42,19 +42,19 @@ class Survey(Model):
 
 # Pydantic request model (v1)
 class SurveyRequest(BaseModel):
-    first_name: constr(min_length=1, max_length=255) = Field(...)
-    last_name: constr(min_length=1, max_length=255) = Field(...)
-    street_address: constr(min_length=1, max_length=255) = Field(...)
-    city: constr(min_length=1, max_length=255) = Field(...)
-    state: constr(min_length=1, max_length=255) = Field(...)
-    zip: constr(min_length=1, max_length=20) = Field(...)
-    telephone: constr(min_length=1, max_length=20) = Field(...)
-    email: EmailStr = Field(...)
-    date_of_survey: date = Field(...)
-    liked_most: Optional[constr(max_length=255)] = None
-    interest_source: Optional[constr(max_length=255)] = None
-    recommend_likelihood: Optional[constr(max_length=255)] = None
-    additional_comments: Optional[constr(max_length=1500)] = None
+    firstName: constr(min_length=1, max_length=255) = Field(..., description="First name is required")
+    lastName: constr(min_length=1, max_length=255) = Field(..., description="Last name is required")
+    streetAddress: constr(min_length=1, max_length=255) = Field(..., description="Street address is required")
+    city: constr(min_length=1, max_length=255) = Field(..., description="City is required")
+    state: constr(min_length=1, max_length=255) = Field(..., description="State is required")
+    zip: constr(min_length=1, max_length=20) = Field(..., description="ZIP code is required")
+    telephone: constr(min_length=1, max_length=20) = Field(..., description="Telephone number is required")
+    email: EmailStr = Field(..., description="Email must be valid")
+    dateOfSurvey: date = Field(..., description="Date of survey is required")
+    likedMost: constr(max_length=255) = Field(None)
+    interestSource: constr(max_length=255) = Field(None)
+    recommendLikelihood: constr(max_length=255) = Field(None)
+    additionalComments: constr(max_length=1500) = Field(None)
 
 # FastAPI app
 app = FastAPI()
@@ -132,11 +132,11 @@ def validate_survey_input(survey: SurveyRequest):
     VALID_INTEREST = ["friends", "television", "internet", "other"]
     VALID_RECOMMEND = ["very likely", "likely", "unlikely"]
 
-    if survey.liked_most and survey.liked_most.lower().strip() not in VALID_LIKED:
+    if survey.likedMost and survey.likedMost.lower().strip() not in VALID_LIKED:
         raise HTTPException(400, f"Invalid liked_most. Must be one of {VALID_LIKED}")
 
-    if survey.interest_source and survey.interest_source.lower().strip() not in VALID_INTEREST:
+    if survey.interestSource and survey.interestSource.lower().strip() not in VALID_INTEREST:
         raise HTTPException(400, f"Invalid interest_source. Must be one of {VALID_INTEREST}")
 
-    if survey.recommend_likelihood and survey.recommend_likelihood.lower().strip() not in VALID_RECOMMEND:
+    if survey.recommendLikelihood and survey.recommendLikelihood.lower().strip() not in VALID_RECOMMEND:
         raise HTTPException(400, f"Invalid recommend_likelihood. Must be one of {VALID_RECOMMEND}")
