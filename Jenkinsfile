@@ -52,8 +52,8 @@ pipeline {
             steps {
                 script { // Load Kubernetes config from Jenkins credentials, get the kubeconfig file from Rancher and upload it to Jenkins credentials.
                     withKubeConfig([credentialsId: 'kubeconfig_credentials']) {
-                        sh 'kubectl apply -f pythonsurvey/deployment.yaml'
-                        sh 'kubectl apply -f pythonsurvey/service.yaml'
+                        sh 'kubectl apply -f ./deployment.yaml'
+                        sh 'kubectl apply -f ./service.yaml'
                         sh 'kubectl rollout restart deployment/pythonsurvey-deployment'
                     }
                 }
