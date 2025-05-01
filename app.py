@@ -23,19 +23,19 @@ db = MySQLDatabase(
 
 # Peewee ORM model
 class Survey(Model):
-    first_name = CharField()
-    last_name = CharField()
-    street_address = CharField()
+    firstName = CharField()
+    lastName = CharField()
+    streetAddress = CharField()
     city = CharField()
     state = CharField()
-    zip = CharField()
+    zipcode = CharField()
     telephone = CharField()
     email = CharField()
-    date_of_survey = DateField()
-    liked_most = CharField(null=True)
-    interest_source = CharField(null=True)
-    recommend_likelihood = CharField(null=True)
-    additional_comments = TextField(null=True)
+    dateOfSurvey = DateField()
+    likedMost = CharField(null=True)
+    interestSource = CharField(null=True)
+    recommendLikelihood = CharField(null=True)
+    additionalComments = TextField(null=True)
 
     class Meta:
         database = db
@@ -47,7 +47,7 @@ class SurveyRequest(BaseModel):
     streetAddress: constr(min_length=1, max_length=255) = Field(...)
     city: constr(min_length=1, max_length=255) = Field(...)
     state: constr(min_length=1, max_length=255) = Field(...)
-    zip: constr(min_length=1, max_length=20) = Field(...)
+    zipcode: constr(min_length=1, max_length=20) = Field(...)
     telephone: constr(min_length=1, max_length=20) = Field(...)
     email: EmailStr = Field(...)
     dateOfSurvey: date = Field(...)
