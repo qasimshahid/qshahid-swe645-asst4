@@ -32,6 +32,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    echo "Contents of db_secret.json before build:"
+                    sh 'cat db_secret.json'
                     dockerImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_NUMBER}", ".")
                 }
             }

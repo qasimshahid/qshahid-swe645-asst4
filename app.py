@@ -11,6 +11,9 @@ from datetime import date
 with open('db_secret.json') as f:
     secrets = json.load(f)
 
+# Add a debug print statement to log database connection details
+print("Connecting to database with host:", secrets['DB_HOST'], "and port:", secrets['DB_PORT'])
+
 # Database configuration
 db = MySQLDatabase(
     secrets['DB_NAME'],
